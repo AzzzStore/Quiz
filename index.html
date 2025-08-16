@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AzzQuiz - Unlimited Indonesia Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6e48aa;
+            --secondary-color: #9d50bb;
+            --accent-color: #4776e6;
+            --text-color: #f5f5f5;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --correct-color: #4caf50;
+            --wrong-color: #f44336;
+            --button-hover: #7b5ab6;
+            --coin-color: #FFD700;
+            --admin-color: #FF5722;
+        }
+
+        .light-mode {
+            --primary-color: #5e35b1;
+            --secondary-color: #3949ab;
+            --accent-color: #1e88e5;
+            --text-color: #333333;
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --correct-color: #388e3c;
+            --wrong-color: #d32f2f;
+            --button-hover: #9575cd;
+            --coin-color: #D4AF37;
+            --admin-color: #E64A19;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            min-height: 90vh;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s;
+        }
+
+        .loading-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .loading-bar {
+            width: 200px;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            transition: width 0.3s;
+        }
+
+        .loading-text {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .login-box {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--text-color);
+            border-radius: 5px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-btn:hover {
+            background-color: var(--button-hover);
+        }
+
+        .register-link {
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .register-link a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        /* Register Screen */
+        .register-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 998;
+        }
+
+        .register-box {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .register-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .back-to-login {
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .back-to-login a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        /* Main Game UI */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        h1 span {
+            color: var(--accent-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .username-display {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .admin-badge {
+            background-color: var(--admin-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .score-container {
+            display: flex;
+            gap: 15px;
+        }
+
+        .score-box, .streak-box, .coin-box, .level-box {
+            text-align: center;
+            min-width: 70px;
+        }
+
+        .score-box span, .streak-box span, .coin-box span, .level-box span {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        #score, #streak, #coins, #level {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        #score {
+            color: var(--accent-color);
+        }
+
+        #streak {
+            color: #FF5722;
+        }
+
+        #coins {
+            color: var(--coin-color);
+        }
+
+        #level {
+            color: #4CAF50;
+        }
+
+        .coin-icon {
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .game-area {
+            margin-bottom: 30px;
+        }
+
+        .question-container {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .category-tag, .difficulty-tag {
+            position: absolute;
+            top: -10px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .category-tag {
+            left: 10px;
+            background-color: var(--primary-color);
+        }
+
+        .difficulty-tag {
+            right: 10px;
+            background-color: var(--secondary-color);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-top: 15px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-2px);
+        }
+
+        .feedback-container {
+            text-align: center;
+        }
+
+        .feedback-text {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            min-height: 24px;
+        }
+
+        .next-btn {
+            padding: 12px 25px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+        }
+
+        .next-btn:hover {
+            background-color: #1565c0;
+            transform: translateY(-2px);
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item span {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .stat-item div {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        /* Shop Section */
+        .shop-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        .shop-panel {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 300px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+            z-index: 99;
+        }
+
+        .shop-panel.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .shop-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-align: center;
+            color: var(--accent-color);
+        }
+
+        .shop-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .shop-item:last-child {
+            border-bottom: none;
+        }
+
+        .shop-item-info {
+            flex: 1;
+        }
+
+        .shop-item-name {
+            font-weight: bold;
+        }
+
+        .shop-item-desc {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .shop-item-price {
+            color: var(--coin-color);
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .buy-btn {
+            padding: 5px 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .buy-btn:hover {
+            background-color: var(--button-hover);
+        }
+
+        .buy-btn:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+
+        /* Logout Button */
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: transparent;
+            color: var(--text-color);
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        footer {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Answer states */
+        .correct {
+            background-color: var(--correct-color) !important;
+        }
+
+        .wrong {
+            background-color: var(--wrong-color) !important;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .score-container {
+                width: 100%;
+                justify-content: space-around;
+                flex-wrap: wrap;
+            }
+
+            .shop-panel {
+                width: 250px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">AzzQuiz</div>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+        <div class="loading-text">Memuat pengetahuan tentang Indonesia...</div>
+    </div>
+
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="login-logo">AzzQuiz</div>
+            <input type="text" id="username" class="login-input" placeholder="Username">
+            <input type="password" id="password" class="login-input" placeholder="Password">
+            <button class="login-btn" id="loginBtn">Masuk</button>
+            <div class="register-link">Belum punya akun? <a href="#" id="showRegister">Daftar</a></div>
+        </div>
+    </div>
+
+    <!-- Register Screen -->
+    <div class="register-screen" id="registerScreen">
+        <div class="register-box">
+            <div class="register-title">Daftar Akun Baru</div>
+            <input type="text" id="regUsername" class="login-input" placeholder="Username">
+            <input type="password" id="regPassword" class="login-input" placeholder="Password">
+            <input type="password" id="regConfirmPassword" class="login-input" placeholder="Konfirmasi Password">
+            <button class="login-btn" id="registerBtn">Daftar</button>
+            <div class="back-to-login">Sudah punya akun? <a href="#" id="backToLogin">Masuk</a></div>
+        </div>
+    </div>
+
+    <!-- Main Game Container -->
+    <div class="container" id="gameContainer" style="display: none;">
+        <button class="logout-btn" id="logoutBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Keluar
+        </button>
+
+        <header>
+            <div>
+                <h1>Azz<span>Quiz</span></h1>
+                <div class="user-info">
+                    <span class="username-display" id="usernameDisplay"></span>
+                    <span class="admin-badge" id="adminBadge" style="display: none;">ADMIN</span>
+                </div>
+            </div>
+            <div class="score-container">
+                <div class="score-box">
+                    <span>Score</span>
+                    <div id="score">0</div>
+                </div>
+                <div class="streak-box">
+                    <span>Streak</span>
+                    <div id="streak">0</div>
+                </div>
+                <div class="coin-box">
+                    <span>Coins</span>
+                    <div id="coins">0</div>
+                </div>
+                <div class="level-box">
+                    <span>Level</span>
+                    <div id="level">1</div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="game-area">
+                <div class="question-container">
+                    <div id="category" class="category-tag">Sejarah</div>
+                    <div id="difficulty" class="difficulty-tag">Medium</div>
+                    <div id="question" class="question-text">Loading question...</div>
+                </div>
+
+                <div class="options-container">
+                    <button class="option-btn" id="option1" onclick="checkAnswer(0)">Option 1</button>
+                    <button class="option-btn" id="option2" onclick="checkAnswer(1)">Option 2</button>
+                    <button class="option-btn" id="option3" onclick="checkAnswer(2)">Option 3</button>
+                    <button class="option-btn" id="option4" onclick="checkAnswer(3)">Option 4</button>
+                </div>
+
+                <div class="feedback-container">
+                    <div id="feedback" class="feedback-text"></div>
+                    <button id="next-btn" class="next-btn" onclick="nextQuestion()">Next Question</button>
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span>Questions</span>
+                    <div id="total-questions">0</div>
+                </div>
+                <div class="stat-item">
+                    <span>Correct</span>
+                    <div id="correct-answers">0</div>
+                </div>
+                <div class="stat-item">
+                    <span>Accuracy</span>
+                    <div id="accuracy">0%</div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="powered-by">Powered by AzzQuiz Engine</div>
+            <div class="theme-toggle">
+                <label class="switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider round"></span>
+                </label>
+                <span>Dark Mode</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Shop Button -->
+    <div class="shop-btn" id="shopBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+    </div>
+
+    <!-- Shop Panel -->
+    <div class="shop-panel" id="shopPanel">
+        <div class="shop-title">Toko Petunjuk</div>
+        <div class="shop-item">
+            <div class="shop-item-info">
+                <div class="shop-item-name">Petunjuk 50:50</div>
+                <div class="shop-item-desc">Hilangkan 2 jawaban salah</div>
+            </div>
+            <button class="buy-btn" id="buyHint1" onclick="buyHint(1)">Beli <span class="shop-item-price">100</span></button>
+        </div>
+        <div class="shop-item">
+            <div class="shop-item-info">
+                <div class="shop-item-name">Petunjuk Waktu</div>
+                <div class="shop-item-desc">Tambahan 15 detik untuk berpikir</div>
+            </div>
+            <button class="buy-btn" id="buyHint2" onclick="buyHint(2)">Beli <span class="shop-item-price">150</span></button>
+        </div>
+        <div class="shop-item">
+            <div class="shop-item-info">
+                <div class="shop-item-name">Petunjuk Spesialis</div>
+                <div class="shop-item-desc">Tanya ahli (hint jawaban)</div>
+            </div>
+            <button class="buy-btn" id="buyHint3" onclick="buyHint(3)">Beli <span class="shop-item-price">200</span></button>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Game data - All about Indonesia
+        const questions = [
+            // Sejarah Indonesia
+            {
+                category: "Sejarah",
+                difficulty: "Easy",
+                question: "Pada tanggal berapa Indonesia memproklamasikan kemerdekaannya?",
+                options: [
+                    "17 Agustus 1945",
+                    "27 Desember 1949",
+                    "1 Juni 1945",
+                    "10 November 1945"
+                ],
+                answer: 0
+            },
+            {
+                category: "Sejarah",
+                difficulty: "Medium",
+                question: "Siapa pencipta lagu kebangsaan Indonesia Raya?",
+                options: [
+                    "W.R. Supratman",
+                    "Ismail Marzuki",
+                    "Gesang",
+                    "C. Simanjuntak"
+                ],
+                answer: 0
+            },
+            {
+                category: "Sejarah",
+                difficulty: "Hard",
+                question: "Peristiwa apa yang terjadi pada 10 November 1945 di Surabaya?",
+                options: [
+                    "Proklamasi Kemerdekaan",
+                    "Pertempuran melawan Sekutu",
+                    "Penandatanganan Renville",
+                    "Konferensi Meja Bundar"
+                ],
+                answer: 1
+            },
+            {
+                category: "Sejarah",
+                difficulty: "Medium",
+                question: "Siapa presiden pertama Indonesia?",
+                options: [
+                    "Soeharto",
+                    "Soekarno",
+                    "B.J. Habibie",
+                    "Mohammad Hatta"
+                ],
+                answer: 1
+            },
+            
+            // Penemuan Indonesia
+            {
+                category: "Penemuan",
+                difficulty: "Medium",
+                question: "Siapa penemu pesawat terbang pertama asal Indonesia?",
+                options: [
+                    "B.J. Habibie",
+                    "Tjokorda Raka Sukawati",
+                    "Liem Koen Hian",
+                    "Raden Saleh"
+                ],
+                answer: 1
+            },
+            {
+                category: "Penemuan",
+                difficulty: "Hard",
+                question: "Apa nama penemu sistem pembangunan jalan dengan metode 'Sosrobahu'?",
+                options: [
+                    "Tjokorda Raka Sukawati",
+                    "B.J. Habibie",
+                    "Warsito P. Taruno",
+                    "Khoirul Anwar"
+                ],
+                answer: 0
+            },
+            {
+                category: "Penemuan",
+                difficulty: "Medium",
+                question: "Siapa ilmuwan Indonesia yang menemukan teknik pemisahan cairan dalam gas?",
+                options: [
+                    "B.J. Habibie",
+                    "Warsito P. Taruno",
+                    "Khoirul Anwar",
+                    "Tjokorda Raka Sukawati"
+                ],
+                answer: 0
+            },
+            
+            // Geografi Indonesia
+            {
+                category: "Geografi",
+                difficulty: "Easy",
+                question: "Apa ibukota Indonesia?",
+                options: [
+                    "Jakarta",
+                    "Bandung",
+                    "Surabaya",
+                    "Medan"
+                ],
+                answer: 0
+            },
+            {
+                category: "Geografi",
+                difficulty: "Medium",
+                question: "Pulau apa yang terbesar di Indonesia?",
+                options: [
+                    "Jawa",
+                    "Sumatera",
+                    "Kalimantan",
+                    "Papua"
+                ],
+                answer: 3
+            },
+            {
+                category: "Geografi",
+                difficulty: "Hard",
+                question: "Gunung apa yang tertinggi di Indonesia?",
+                options: [
+                    "Semeru",
+                    "Kerinci",
+                    "Rinjani",
+                    "Puncak Jaya"
+                ],
+                answer: 3
+            },
+            
+            // Budaya Indonesia
+            {
+                category: "Budaya",
+                difficulty: "Easy",
+                question: "Apa nama rumah adat dari Sumatera Barat?",
+                options: [
+                    "Joglo",
+                    "Rumah Gadang",
+                    "Honai",
+                    "Lamin"
+                ],
+                answer: 1
+            },
+            {
+                category: "Budaya",
+                difficulty: "Medium",
+                question: "Tari apa yang berasal dari Bali?",
+                options: [
+                    "Tari Saman",
+                    "Tari Kecak",
+                    "Tari Piring",
+                    "Tari Tor-Tor"
+                ],
+                answer: 1
+            },
+            {
+                category: "Budaya",
+                difficulty: "Hard",
+                question: "Alat musik tradisional apa yang berasal dari Jawa Barat?",
+                options: [
+                    "Angklung",
+                    "Sasando",
+                    "Tifa",
+                    "Kolintang"
+                ],
+                answer: 0
+            },
+            
+            // Teknologi Indonesia
+            {
+                category: "Teknologi",
+                difficulty: "Medium",
+                question: "Siapa penemu teknologi 4G LTE berbasis OFDM asal Indonesia?",
+                options: [
+                    "B.J. Habibie",
+                    "Warsito P. Taruno",
+                    "Khoirul Anwar",
+                    "Tjokorda Raka Sukawati"
+                ],
+                answer: 2
+            },
+            {
+                category: "Teknologi",
+                difficulty: "Hard",
+                question: "Apa nama teknologi pemindai otak yang ditemukan ilmuwan Indonesia?",
+                options: [
+                    "ECVT",
+                    "Sosrobahu",
+                    "LTE OFDM",
+                    "Puri Damai"
+                ],
+                answer: 0
+            }
+        ];
+
+        // Game state variables
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let streak = 0;
+        let coins = 0;
+        let level = 1;
+        let totalQuestionsAnswered = 0;
+        let correctAnswers = 0;
+        let currentQuestion = {};
+        let questionAnswered = false;
+        let currentUser = null;
+        let isAdmin = false;
+
+        // DOM elements
+        const loadingScreen = document.getElementById('loadingScreen');
+        const loadingProgress = document.getElementById('loadingProgress');
+        const loginScreen = document.getElementById('loginScreen');
+        const registerScreen = document.getElementById('registerScreen');
+        const gameContainer = document.getElementById('gameContainer');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const showRegisterBtn = document.getElementById('showRegister');
+        const backToLoginBtn = document.getElementById('backToLogin');
+        const regUsernameInput = document.getElementById('regUsername');
+        const regPasswordInput = document.getElementById('regPassword');
+        const regConfirmPasswordInput = document.getElementById('regConfirmPassword');
+        const registerBtn = document.getElementById('registerBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const usernameDisplay = document.getElementById('usernameDisplay');
+        const adminBadge = document.getElementById('adminBadge');
+        const questionElement = document.getElementById('question');
+        const optionButtons = [
+            document.getElementById('option1'),
+            document.getElementById('option2'),
+            document.getElementById('option3'),
+            document.getElementById('option4')
+        ];
+        const feedbackElement = document.getElementById('feedback');
+        const nextButton = document.getElementById('next-btn');
+        const scoreElement = document.getElementById('score');
+        const streakElement = document.getElementById('streak');
+        const coinsElement = document.getElementById('coins');
+        const levelElement = document.getElementById('level');
+        const totalQuestionsElement = document.getElementById('total-questions');
+        const correctAnswersElement = document.getElementById('correct-answers');
+        const accuracyElement = document.getElementById('accuracy');
+        const categoryElement = document.getElementById('category');
+        const difficultyElement = document.getElementById('difficulty');
+        const themeToggle = document.getElementById('theme-toggle');
+        const shopBtn = document.getElementById('shopBtn');
+        const shopPanel = document.getElementById('shopPanel');
+        const notification = document.getElementById('notification');
+
+        // Database simulation (in a real app, this would be server-side with MySQL)
+        let usersDatabase = [
+            { username: 'admin', password: 'admin', isAdmin: true, coins: 999999, level: 999999, score: 0, stats: { totalQuestions: 0, correctAnswers: 0 } }
+        ];
+
+        // Initialize game
+        function initGame() {
+            // Simulate loading
+            let progress = 0;
+            const loadingInterval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress > 100) progress = 100;
+                loadingProgress.style.width = `${progress}%`;
+                
+                if (progress === 100) {
+                    clearInterval(loadingInterval);
+                    setTimeout(() => {
+                        loadingScreen.style.opacity = '0';
+                        setTimeout(() => {
+                            loadingScreen.style.display = 'none';
+                            showLoginScreen();
+                        }, 500);
+                    }, 500);
+                }
+            }, 200);
+            
+            // Set up shop toggle
+            shopBtn.addEventListener('click', function() {
+                shopPanel.classList.toggle('active');
+            });
+            
+            // Close shop when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!shopPanel.contains(e.target) && e.target !== shopBtn) {
+                    shopPanel.classList.remove('active');
+                }
+            });
+            
+            // Set up login/register navigation
+            showRegisterBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                loginScreen.style.display = 'none';
+                registerScreen.style.display = 'flex';
+            });
+            
+            backToLoginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                registerScreen.style.display = 'none';
+                loginScreen.style.display = 'flex';
+            });
+        }
+
+        // Show login screen
+        function showLoginScreen() {
+            loginScreen.style.display = 'flex';
+            
+            loginBtn.addEventListener('click', function() {
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value.trim();
+                
+                if (username === '' || password === '') {
+                    showNotification('Username dan password tidak boleh kosong!');
+                    return;
+                }
+                
+                // Check user in database
+                const user = usersDatabase.find(u => u.username === username && u.password === password);
+                
+                if (user) {
+                    // Login successful
+                    currentUser = user;
+                    isAdmin = user.isAdmin || false;
+                    
+                    // Load user data
+                    score = user.score || 0;
+                    coins = user.coins || 0;
+                    level = user.level || 1;
+                    totalQuestionsAnswered = user.stats?.totalQuestions || 0;
+                    correctAnswers = user.stats?.correctAnswers || 0;
+                    
+                    // Hide login screen and show game
+                    loginScreen.style.display = 'none';
+                    startGame();
+                } else {
+                    showNotification('Username atau password salah!');
+                }
+            });
+        }
+
+        // Handle registration
+        function setupRegistration() {
+            registerBtn.addEventListener('click', function() {
+                const username = regUsernameInput.value.trim();
+                const password = regPasswordInput.value.trim();
+                const confirmPassword = regConfirmPasswordInput.value.trim();
+                
+                if (username === '' || password === '' || confirmPassword === '') {
+                    showNotification('Semua field harus diisi!');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    showNotification('Password dan konfirmasi password tidak cocok!');
+                    return;
+                }
+                
+                if (username.length < 3) {
+                    showNotification('Username minimal 3 karakter!');
+                    return;
+                }
+                
+                if (password.length < 4) {
+                    showNotification('Password minimal 4 karakter!');
+                    return;
+                }
+                
+                // Check if username already exists
+                if (usersDatabase.some(u => u.username === username)) {
+                    showNotification('Username sudah digunakan!');
+                    return;
+                }
+                
+                // Create new user
+                const newUser = {
+                    username,
+                    password,
+                    isAdmin: false,
+                    coins: 0,
+                    level: 1,
+                    score: 0,
+                    stats: {
+                        totalQuestions: 0,
+                        correctAnswers: 0
+                    }
+                };
+                
+                usersDatabase.push(newUser);
+                showNotification('Pendaftaran berhasil! Silakan login.');
+                
+                // Go back to login
+                registerScreen.style.display = 'none';
+                loginScreen.style.display = 'flex';
+                
+                // Clear registration form
+                regUsernameInput.value = '';
+                regPasswordInput.value = '';
+                regConfirmPasswordInput.value = '';
+            });
+        }
+
+        // Start the game
+        function startGame() {
+            gameContainer.style.display = 'block';
+            
+            // Display user info
+            usernameDisplay.textContent = currentUser.username;
+            if (isAdmin) {
+                adminBadge.style.display = 'inline-block';
+                coinsElement.textContent = '∞';
+            }
+            
+            updateStats();
+            loadQuestion();
+            
+            // Set up theme toggle
+            themeToggle.addEventListener('change', function() {
+                document.body.classList.toggle('light-mode');
+                localStorage.setItem('theme', this.checked ? 'light' : 'dark');
+            });
+            
+            // Load saved theme
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+                themeToggle.checked = true;
+            }
+            
+            // Set up logout
+            logoutBtn.addEventListener('click', function() {
+                // Save user progress before logout
+                if (currentUser) {
+                    currentUser.score = score;
+                    currentUser.coins = coins;
+                    currentUser.level = level;
+                    currentUser.stats.totalQuestions = totalQuestionsAnswered;
+                    currentUser.stats.correctAnswers = correctAnswers;
+                }
+                
+                // Reset game state
+                currentUser = null;
+                isAdmin = false;
+                
+                // Show login screen
+                gameContainer.style.display = 'none';
+                loginScreen.style.display = 'flex';
+                
+                // Clear login form
+                usernameInput.value = '';
+                passwordInput.value = '';
+            });
+        }
+
+        // Load a random question
+        function loadQuestion() {
+            questionAnswered = false;
+            nextButton.style.display = 'none';
+            feedbackElement.textContent = '';
+            
+            // Get a random question
+            currentQuestionIndex = Math.floor(Math.random() * questions.length);
+            currentQuestion = questions[currentQuestionIndex];
+            
+            // Update UI
+            questionElement.textContent = currentQuestion.question;
+            categoryElement.textContent = currentQuestion.category;
+            difficultyElement.textContent = currentQuestion.difficulty;
+            
+            // Set options
+            for (let i = 0; i < optionButtons.length; i++) {
+                optionButtons[i].textContent = currentQuestion.options[i];
+                optionButtons[i].classList.remove('correct', 'wrong');
+                optionButtons[i].disabled = false;
+                optionButtons[i].style.display = 'block';
+            }
+        }
+
+        // Check selected answer
+        function checkAnswer(selectedIndex) {
+            if (questionAnswered) return;
+            
+            questionAnswered = true;
+            totalQuestionsAnswered++;
+            
+            // Disable all buttons
+            optionButtons.forEach(button => {
+                button.disabled = true;
+            });
+            
+            // Check if answer is correct
+            if (selectedIndex === currentQuestion.answer) {
+                // Correct answer
+                optionButtons[selectedIndex].classList.add('correct');
+                feedbackElement.textContent = 'Benar!';
+                feedbackElement.style.color = 'var(--correct-color)';
+                score += getPointsForDifficulty(currentQuestion.difficulty);
+                streak++;
+                correctAnswers++;
+                
+                // Add coins for correct answer (1 coin per correct answer)
+                if (!isAdmin) {
+                    coins += 1;
+                    showNotification(`+1 koin! Total: ${coins} koin`);
+                }
+                
+                // Check level up
+                checkLevelUp();
+            } else {
+                // Wrong answer
+                optionButtons[selectedIndex].classList.add('wrong');
+                optionButtons[currentQuestion.answer].classList.add('correct');
+                feedbackElement.textContent = `Salah! Jawaban benar: ${currentQuestion.options[currentQuestion.answer]}`;
+                feedbackElement.style.color = 'var(--wrong-color)';
+                streak = 0;
+            }
+            
+            // Update stats and show next button
+            updateStats();
+            nextButton.style.display = 'inline-block';
+            
+            // Save user progress
+            if (currentUser) {
+                currentUser.score = score;
+                currentUser.coins = coins;
+                currentUser.level = level;
+                currentUser.stats.totalQuestions = totalQuestionsAnswered;
+                currentUser.stats.correctAnswers = correctAnswers;
+            }
+        }
+
+        // Get points based on question difficulty
+        function getPointsForDifficulty(difficulty) {
+            switch (difficulty) {
+                case 'Easy': return 10;
+                case 'Medium': return 20;
+                case 'Hard': return 30;
+                default: return 10;
+            }
+        }
+
+        // Check if player leveled up
+        function checkLevelUp() {
+            const questionsForNextLevel = level * 5;
+            if (totalQuestionsAnswered >= questionsForNextLevel) {
+                level++;
+                showNotification(`Level up! Sekarang level ${level}`);
+                
+                // Save user progress
+                if (currentUser) {
+                    currentUser.level = level;
+                }
+            }
+        }
+
+        // Load next question
+        function nextQuestion() {
+            loadQuestion();
+        }
+
+        // Buy hint from shop
+        function buyHint(hintType) {
+            const hintCost = [100, 150, 200][hintType - 1];
+            
+            if (coins < hintCost && !isAdmin) {
+                showNotification('Koin tidak cukup!');
+                return;
+            }
+            
+            if (!isAdmin) {
+                coins -= hintCost;
+                showNotification(`Berhasil membeli petunjuk! Koin tersisa: ${coins}`);
+                updateStats();
+            }
+            
+            switch (hintType) {
+                case 1: // 50:50
+                    let optionsToHide = [];
+                    for (let i = 0; i < optionButtons.length; i++) {
+                        if (i !== currentQuestion.answer && optionsToHide.length < 2) {
+                            optionsToHide.push(i);
+                        }
+                    }
+                    
+                    // Randomly select 2 wrong answers to hide
+                    for (let i = 0; i < 2; i++) {
+                        const randomIndex = Math.floor(Math.random() * optionsToHide.length);
+                        optionButtons[optionsToHide[randomIndex]].style.display = 'none';
+                        optionsToHide.splice(randomIndex, 1);
+                    }
+                    break;
+                    
+                case 2: // Time hint
+                    // In a more advanced version, you could implement a timer
+                    feedbackElement.textContent = "Anda mendapat tambahan waktu 15 detik!";
+                    feedbackElement.style.color = "var(--accent-color)";
+                    break;
+                    
+                case 3: // Expert hint
+                    const correctAnswer = currentQuestion.options[currentQuestion.answer];
+                    feedbackElement.textContent = `Ahli berkata: Jawabannya mirip dengan "${correctAnswer.substring(0, 3)}..."`;
+                    feedbackElement.style.color = "var(--accent-color)";
+                    break;
+            }
+            
+            shopPanel.classList.remove('active');
+            
+            // Save user progress
+            if (currentUser) {
+                currentUser.coins = coins;
+            }
+        }
+
+        // Show notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Update all statistics
+        function updateStats() {
+            scoreElement.textContent = score;
+            streakElement.textContent = streak;
+            
+            if (!isAdmin) {
+                coinsElement.textContent = coins;
+            }
+            
+            levelElement.textContent = level;
+            totalQuestionsElement.textContent = totalQuestionsAnswered;
+            correctAnswersElement.textContent = correctAnswers;
+            
+            // Calculate accuracy
+            const accuracy = totalQuestionsAnswered > 0 
+                ? Math.round((correctAnswers / totalQuestionsAnswered) * 100)
+                : 0;
+            accuracyElement.textContent = `${accuracy}%`;
+            
+            // Update shop buttons state
+            if (!isAdmin) {
+                document.getElementById('buyHint1').disabled = coins < 100;
+                document.getElementById('buyHint2').disabled = coins < 150;
+                document.getElementById('buyHint3').disabled = coins < 200;
+            }
+        }
+
+        // Start the game when page loads
+        window.onload = function() {
+            initGame();
+            setupRegistration();
+        };
+
+        // In a real implementation, you would have server-side code to connect to MySQL
+        // Here's an example of what the PHP backend might look like:
+
+        /*
+        // PHP MySQL connection (save as api.php)
+        <?php
+        header('Content-Type: application/json');
+        
+        $servername = "localhost";
+        $username = "your_username";
+        $password = "your_password";
+        $dbname = "azzquiz_db";
+        
+        // Create connection
+        $conn = new mysqli($servername, $username, $password, $dbname);
+        
+        // Check connection
+        if ($conn->connect_error) {
+            die(json_encode(['success' => false, 'message' => "Connection failed: " . $conn->connect_error]));
+        }
+        
+        // Handle different actions
+        $action = $_POST['action'] ?? '';
+        
+        if ($action === 'login') {
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+            
+            $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            if ($result->num_rows > 0) {
+                $user = $result->fetch_assoc();
+                if (password_verify($password, $user['password'])) {
+                    echo json_encode(['success' => true, 'user' => $user]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Invalid password']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'User not found']);
+            }
+        }
+        elseif ($action === 'register') {
+            $username = $_POST['username'];
+            $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+            
+            // Check if username exists
+            $stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            if ($result->num_rows > 0) {
+                echo json_encode(['success' => false, 'message' => 'Username already exists']);
+            } else {
+                $stmt = $conn->prepare("INSERT INTO users (username, password, coins, level, score, is_admin) VALUES (?, ?, 0, 1, 0, 0)");
+                $stmt->bind_param("ss", $username, $password);
+                
+                if ($stmt->execute()) {
+                    echo json_encode(['success' => true]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Registration failed']);
+                }
+            }
+        }
+        elseif ($action === 'update') {
+            $userId = $_POST['user_id'];
+            $coins = $_POST['coins'];
+            $level = $_POST['level'];
+            $score = $_POST['score'];
+            $totalQuestions = $_POST['total_questions'];
+            $correctAnswers = $_POST['correct_answers'];
+            
+            $stmt = $conn->prepare("UPDATE users SET coins = ?, level = ?, score = ?, total_questions = ?, correct_answers = ? WHERE id = ?");
+            $stmt->bind_param("iiiidi", $coins, $level, $score, $totalQuestions, $correctAnswers, $userId);
+            
+            if ($stmt->execute()) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Update failed']);
+            }
+        }
+        
+        $conn->close();
+        ?>
+        */
+
+        // You would then replace the database simulation with AJAX calls to this PHP API
+    </script>
+</body>
+</html>
